@@ -8,8 +8,7 @@ filename = 'data/lena.png';
 img = double(imread(filename));
 
 % Generate noisy image
-[img_nse, noise] = noisegen(img, 'poisson', 'Q', 10);%20);
-load('data/img_nse.mat');
+[img_nse, noise] = noisegen(img, 'poisson', 20);
 
 % Perform denoising
 param.wait = waitbar(0, 'RNL denoising...');

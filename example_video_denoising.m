@@ -4,7 +4,7 @@ close all
 addpathrec('.')
 
 % Load video
-filename = 'data/ref_short.mat';
+filename = 'data/video.mat';
 img = importdata(filename);
 
 % Generate noisy video
