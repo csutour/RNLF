@@ -7,6 +7,14 @@
 #include <math.h>
 #include <time.h>
 
+#if defined(_WIN32) || defined(_WIN64)
+ #define isnan mxIsNaN
+ #define NAN (mxGetNaN())
+ double roundf(double number)
+ {
+   return (number >= 0) ? (int)(number + 0.5) : (int)(number - 0.5);
+ }
+#endif
 
 /* Lookup table for "1-2*abs(normcdf(linspace(0, 5, 4096), 0, 1) - 0.5)" */
 const int normpvalues_2sided_size = 4096;
@@ -953,8 +961,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
   double* ima_pvalue;
   int W, dx, dy;
   int M, N;
+  const mwSize* sizes;
   double2 (*kendalltau_func)(double2*, long) = kendalltau;
-
+  
   if (nrhs < 4 || nrhs > 5 || nlhs > 2)
     {
       usage();
@@ -991,8 +1000,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
 		usage();
 		return;
 	      }
-    }
-  const mwSize* sizes = mxGetDimensions(prhs[0]);
+    };
+  sizes = mxGetDimensions(prhs[0]);
   M = sizes[1];
   N = sizes[0];
   ima = mxGetData(prhs[0]);
