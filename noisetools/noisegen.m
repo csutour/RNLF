@@ -1,42 +1,70 @@
+%NOISEGEN generator of noisy image
+%   IMG_NSE = NOISEGEN(IMG, TYPE, ARGS) returns a generate
+%   noisy image with a specific noise. IMG is a 2-D array
+%   containing the noise-free pixel values. NOISE can be 'gauss',
+%   'gamma', 'poisson', 'hybrid', or 'poly2'. Noise is zero-mean,
+%   ie, E[IMG_NSE] = IMG. ARGS are mandatory arguments described
+%   below.
+%
+%   [IMG_NSE, PARAM] = NOISEGEN(...) returns a description of the
+%   nature of the generated noise in the structure PARAM containing
+%   at least the following fields
+%       PARAM.type   TYPE of noise,
+%       PARAM.coefs  COEFS of the 2nd order polynomial of the nlf,
+%       PARAM.nlf    handle function of the nlf.
+%
+%   NOISEGEN(IMG, TYPE, STRENGH, ...). STRENGH sets the level of
+%   noise such that IMG_NSE has an approximative PSNR of
+%       PSNR = 10 log10 255^2 / STRENGH^2.
+%
+%   NOISEGEN(IMG, 'gauss', 'sig', SIG) returns an image damaged by
+%   Gaussian noise such that V[IMG_NSE|IMG] = SIG.
+%
+%   NOISEGEN(IMG, 'poisson', 'Q', Q) returns an image damaged by
+%   Poisson noise such that V[IMG_NSE|IMG] = Q * IMG_NSE.
+%
+%   NOISEGEN(IMG, 'gamma', 'L', L) returns an image damaged by
+%   gamma noise such that V[IMG_NSE|IMG] = IMG_NSE.^2 / L.
+%
+%   NOISEGEN(IMG, 'hybrid', 'prop', PROP, 'sig', SIG, 'Q', Q, 'L', L)
+%   returns an image damaged by a sum of Gaussian, Poisson and
+%   gamma noise where PROP are multiplicative factors and SIG, Q
+%   and L are their respective parameters.
+%
+%   NOISEGEN(IMG, 'hybrid', STRENGH, 'prop', PROP) returns an
+%   image damaged by a sum of Gaussian, Poisson and gamma noise
+%   where PROP are multiplicative factors.
+%
+%   NOISEGEN(IMG, 'poly2', 'coefs', COEFS) returns an image
+%   damaged by a Gaussian noise such that
+%       V[IMG_NSE|IMG] = COEFS(3) IMG.^2 + COEFS(2) IMG + COEFS(1)
+%
+%   NOISEGEN(IMG, 'poly2', STRENGH, 'prop', PROP) returns an image
+%   damaged by a Gaussian noise such that V[IMG_NSE|IMG] is
+%   proportionnal to PROP(3) IMG.^2 + PROP(2) IMG + PROP(1).
+%
+%   NOISEGEN(IMG, PARAM) returns an image damaged by the noise
+%   described in the structure PARAM.
+%
+%   Example:
+%       img        = double(imread('lena.png'));
+%       img_gauss  = noisegen(img, 'gauss', 20);
+%       img_gamma  = noisegen(img, 'gamma', 'L', 20);
+%       img_poiss  = noisegen(img, 'poisson', 'Q', 1);
+%       img_hybrid = noisegen(img, 'poly2', 5, 'prop', [.8 .1 .1]);
+%
+%   License
+%   -------
+%   This work is protected by the CeCILL-C Licence, see
+%   - Licence_CeCILL_V2.1-en.txt
+%   - Licence_CeCILL_V2.1-fr.txt
+%
+%   See also NOISE_ESTIMATION.
+
+%   Copyright 2015 Camille Sutour and Charles Deledalle
+
+
 function [img_nse, param] = noisegen(img, varargin)
-
-% [img_nse, param] = noisegen(img, type, strengh)
-%    Generate a noisy image 'img_nse' of with noise of type 'type',
-%    such that E[img_nse] = img.
-%    and its PSNR is 10 log10 255^2 / strengh^2.
-%    'param' provides a description of the generated noise.
-%
-% img_nse = noisegen(img, 'gauss', 'sig', sig)
-%    Set V[img_nse] = sig.
-%
-% img_nse = noisegen(img, 'gamma', 'L', L)
-%    Set V[img_nse] = img_nse^2 / L.
-%
-% img_nse = noisegen(img, 'poisson', 'Q', Q)
-%    Set V[img_nse] = Q * img_nse.
-%
-% img_nse = noisegen(img, 'hybrid', 'prop', prop, 'sig', sig, 'Q', Q, 'L', L)
-%    Sum of Gaussian, Poisson and Gamma noise,
-%    'prop' are multiplicative factors,
-%    'sig', 'Q' and 'L' are the respective parameters.
-%
-% img_nse = noisegen(img, 'hybrid', strengh, 'prop', prop)
-%    Sum of Gaussian, Poisson and Gamma noise,
-%    'prop' are proportions,
-%    The PSNR will be 10 log10 255^2 / strengh^2.
-%
-% img_nse = noisegen(img, 'poly2', 'coefs', coefs)
-%    Gaussian noise with 2nd order polynomial,
-%    'coefs' are the coefficients of the polynomial,
-%
-% img_nse = noisegen(img, 'poly2', strengh, 'prop', prop)
-%    Gaussian noise with 2nd order polynomial,
-%    'prop' are proportional to the coefficients of the polynomial,
-%    The PSNR will be 10 log10 255^2 / strengh^2.
-%
-% [img_nse, param] = noisegen(img, param_noise)
-%    Use the 'param_noise' stucture to generate noise
-
 
 [M, N, T] = size(img);
 

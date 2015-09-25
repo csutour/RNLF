@@ -1,8 +1,19 @@
+%CENTRAL_PIX Internal function
+%   Not documented
+%
+%   License
+%   -------
+%   This work is protected by the CeCILL-C Licence, see
+%   - Licence_CeCILL_V2.1-en.txt
+%   - Licence_CeCILL_V2.1-fr.txt
+
+%   Copyright 2015 Camille Sutour and Charles Deledalle
+
 function [m_criteria, s_criteria] = central_pix(img_sample, param)
 
 p      = param.p;
 ptemp  = param.p_temp;
-shape  = param.search;
+shape  = param.shape;
 noise  = param.noise;
 blur   = param.blur;
 

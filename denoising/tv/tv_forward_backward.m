@@ -7,7 +7,7 @@ lambda           = getoptions(param, 'lambda', [], 1);
 gamma            = getoptions(param, 'gamma', 0.001);
 tau              = getoptions(param, 'tau', 1/8);
 W                = getoptions(param, 'W', ones(n, m, t));
-N_iter           = getoptions(param, 'N_iter', 500);
+N_iter           = getoptions(param, 'N_iter', 1000);
 nsteps           = getoptions(param, 'nsteps', N_iter);
 
 % Functionnal definitions

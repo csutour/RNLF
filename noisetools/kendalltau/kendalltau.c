@@ -1,3 +1,15 @@
+/*KENDALLTAU Internal code for homogeneous region detection
+**   Please refer to file kendalltau.m
+
+**   License
+**   -------
+**   This work is protected by the CeCILL-C Licence, see
+**   - Licence_CeCILL_V2.1-en.txt
+**   - Licence_CeCILL_V2.1-fr.txt
+**
+**   Copyright 2015 Charles Deledalle
+*/
+
 #ifdef MATLAB_MEX_FILE
 # include <mex.h>
 #endif
@@ -8,6 +20,7 @@
 #include <time.h>
 
 #if defined(_WIN32) || defined(_WIN64)
+/* For Microsoft Windows SKD C++ compiler */
  #define isnan mxIsNaN
  #define NAN (mxGetNaN())
  double roundf(double number)
@@ -963,7 +976,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
   int M, N;
   const mwSize* sizes;
   double2 (*kendalltau_func)(double2*, long) = kendalltau;
-  
+
   if (nrhs < 4 || nrhs > 5 || nlhs > 2)
     {
       usage();

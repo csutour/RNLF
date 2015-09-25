@@ -3,7 +3,7 @@ close all
 
 addpathrec('.')
 
-% Load video
+% Load image
 filename = 'data/lena.png';
 img = double(imread(filename));
 
@@ -12,13 +12,12 @@ img = double(imread(filename));
 
 % Perform denoising
 param.wait = waitbar(0, 'RNL denoising...');
-img_rnlf = rnlf(img_nse, noise, param);
+img_rnl = rnl(img_nse, noise, param);
 close(param.wait);
 
 % Show results
-figure
+figure('Position', get(0, 'ScreenSize'));
 subplot(1, 2, 1);
 plotimage(img_nse, img, 'Noisy image');
 subplot(1, 2, 2);
-plotimage(img_rnlf, img, 'RNLF');
-
+plotimage(img_rnl, img, 'RNL');

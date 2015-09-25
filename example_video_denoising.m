@@ -5,16 +5,22 @@ addpathrec('.')
 
 % Load video
 filename = 'data/video.mat';
-img = importdata(filename);
+video = importdata(filename);
 
 % Generate noisy video
-[img_nse, noise] = noisegen(img, 'gauss', 20);
+[video_nse, noise] = noisegen(video, 'gauss', 20);
 
 % Perform denoising
 param.wait = waitbar(0, 'RNL denoising...');
-img_rnlf = rnlf(img_nse, noise, param);
+video_rnl = rnl(video_nse, noise, param);
 close(param.wait);
 
 % Show results
-dispvideo(img_rnlf,img_nse,img);
-
+figure('Position', get(0, 'ScreenSize'));
+subplot(1, 3, 1);
+h(1) = plotvideo(video, [], 'Original video');
+subplot(1, 3, 2);
+h(2) = plotvideo(video_nse, video, 'Noisy video');
+subplot(1, 3, 3);
+h(3) = plotvideo(video_rnl, video, 'RNL');
+playvideo(h, 0.2);
